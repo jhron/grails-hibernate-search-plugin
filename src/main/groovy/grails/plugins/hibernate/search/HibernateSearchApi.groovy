@@ -208,7 +208,7 @@ class HibernateSearchApi {
 
         try {
 
-            def result = callable.call(transaction)
+            def result = callable.call(transaction, fullTextSession)
 
             if (transaction.isActive()) {
                 transaction.commit()
