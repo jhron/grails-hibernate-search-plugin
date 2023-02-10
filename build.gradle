@@ -10,7 +10,7 @@ buildscript {
 }
 
 
-version "2.4.0"
+version "2.4.2-snapshot"
 group "org.grails.plugins"
 
 apply plugin:"eclipse"
@@ -48,9 +48,9 @@ dependencies {
 	compile "org.grails.plugins:hibernate5"
 	compile "org.hibernate:hibernate-core:5.2.10.Final"
 	compile "org.hibernate:hibernate-ehcache:5.2.10.Final"
-	
-	compile "org.hibernate:hibernate-search-orm:5.11.4.Final" 
-	
+
+	compile "org.hibernate:hibernate-search-orm:5.11.4.Final"
+
 	console "org.grails:grails-console"
 	profile "org.grails.profiles:plugin"
 
@@ -65,7 +65,7 @@ dependencies {
 	testCompile "org.grails.plugins:geb"
 	testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
 	testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
-	
+
 	groovydocconf 'org.fusesource.jansi:jansi:1.13'
 	groovydocconf 'org.codehaus.groovy:groovy-all:2.4.12'
 
@@ -100,10 +100,10 @@ publishing {
 
 			pom.withXml {
 				def pomNode = asNode()
-				
+
 				pomNode.appendNode('description',
 					'Grails 3.2.x plugin for Hibernate Search')
-				
+
 				pomNode.dependencyManagement.replaceNode {}
 
 				// simply remove dependencies without a version
@@ -132,7 +132,7 @@ if (project.hasProperty('hibernateSearchMavenUser') && project.hasProperty('hibe
 				url "$hibernateSearchMavenRepoUrl/libs-release-local"
 			}
 		}
-		
+
 	}
 }
 
