@@ -6,9 +6,9 @@ import grails.plugins.hibernate.search.config.SearchMappingEntityConfig
 import grails.plugins.hibernate.search.context.HibernateSearchMappingContextConfiguration
 import org.grails.core.artefact.DomainClassArtefactHandler
 import org.grails.datastore.mapping.reflect.ClassPropertyFetcher
+import org.grails.orm.hibernate.HibernateDatastore
 import org.grails.orm.hibernate.cfg.HibernateMappingContextConfiguration
 import org.hibernate.Session
-import org.hibernate.SessionFactory
 import org.hibernate.search.annotations.Indexed
 import org.hibernate.search.cfg.PropertyDescriptor
 import org.slf4j.Logger
@@ -17,7 +17,6 @@ import org.springframework.context.ApplicationContext
 import org.springframework.core.annotation.AnnotationUtils
 
 class HibernateSearchGrailsPlugin extends Plugin {
-
     public static final String INDEXED_ENTITIES_GRAILS_APP_CONFIG_KEY = "hibernate.search.indexedPropertiesBy"
 
     private final static Logger log = LoggerFactory.getLogger(this)
@@ -107,6 +106,7 @@ class HibernateSearchGrailsPlugin extends Plugin {
 
     void addSearchDsl(ApplicationContext applicationContext) {
         // add search() method to indexed domain classes:
+        HibernateDatastore hibernateDatastore = applicationContext.getBean('hibernateDatastore')
         grailsApplication.getArtefacts(DomainClassArtefactHandler.TYPE).each {domainClass ->
 
             Class clazz = domainClass.getClazz()
@@ -114,12 +114,12 @@ class HibernateSearchGrailsPlugin extends Plugin {
             if (ClassPropertyFetcher.forClass(clazz).getStaticPropertyValue(SearchMappingEntityConfig.INDEX_CONFIG_NAME, Closure) ||
                 AnnotationUtils.isAnnotationDeclaredLocally(Indexed, clazz)) {
                 domainClass.metaClass.static.search = {
-                    new HibernateSearchApi(domainClass, applicationContext.getBean(SessionFactory).getCurrentSession(), pluginConfig)
+                    new HibernateSearchApi(domainClass, hibernateDatastore.sessionFactory.getCurrentSession(), pluginConfig)
                 }
 
                 domainClass.metaClass.search = {
                     def instance = delegate
-                    new HibernateSearchApi(domainClass, instance, applicationContext.getBean(SessionFactory).getCurrentSession(), pluginConfig)
+                    new HibernateSearchApi(domainClass, instance, hibernateDatastore.sessionFactory.getCurrentSession(), pluginConfig)
                 }
             }
         }
