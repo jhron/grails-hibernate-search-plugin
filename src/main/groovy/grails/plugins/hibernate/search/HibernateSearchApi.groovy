@@ -129,7 +129,12 @@ class HibernateSearchApi {
 
         invokeClosureNode searchDsl
 
-        createFullTextQuery().resultSize
+        if ( criteria?.criterionEntries?.size() > 0 ) {
+            return createFullTextQuery().getResultList().size()
+        }
+        else {
+            return createFullTextQuery().resultSize
+        }
     }
 
     /**
